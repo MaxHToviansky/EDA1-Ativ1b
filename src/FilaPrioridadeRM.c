@@ -1,11 +1,10 @@
 #include "FilaPrioridadeRM.h"
 
 
-
 /*************** CRIA ***************/
-struct descF * cria(int tamInfo)
+struct descFRM * criaRM(int tamInfo)
 {   	
-    struct descF *desc = (struct descF*) malloc(sizeof(struct descF));
+    struct descFRM *desc = (struct descFRM*) malloc(sizeof(struct descFRM));
     if(desc != NULL) {
         desc->cauda = NULL;
         desc->refMov = NULL;
@@ -16,9 +15,9 @@ struct descF * cria(int tamInfo)
 }
 
 /*************** INSERE A PARTIR DA FRENTE ***************/
-int insere(info *pInfo, struct descF *p)
+int insereRM(info *pInfo, struct descFRM *p)
 { 
-	int result;
+	int result, mediaIt = 0;
   	struct noFila *novoNoFila=NULL, *visitado=NULL;
   	if ((novoNoFila = (struct noFila *) malloc(sizeof(struct noFila))) != NULL)
     { 
@@ -36,42 +35,29 @@ int insere(info *pInfo, struct descF *p)
                 novoNoFila->defronte=p->cauda;
                 p->cauda->atras=novoNoFila;
                 p->cauda=novoNoFila;
+                p->refMov = novoNoFila;
                     
             }
-            else
-            {    	 
-                visitado = p->frente; /*maior prior rank na frente */
-                while(visitado->atras != NULL && (visitado->dados.rank >= novoNoFila->dados.rank)) 
-                    visitado= visitado->atras; /* A(rank) <= B(rank) */
-
-                if(visitado->dados.rank < novoNoFila->dados.rank)   /* novo item fica a frente do visitado */
-                {
-                    novoNoFila->atras = visitado;
-                    if (visitado->defronte != NULL)
-                    {      
-                        novoNoFila->defronte = visitado->defronte;
-                        visitado->defronte->atras = novoNoFila;
-                    } 
-                    else // novo item � o de maior prior rank de todos na fila, sendo a nova frente
-                    {  
-                        novoNoFila->defronte = NULL;      
-                        p->frente = novoNoFila;
-                    }	   
-                    visitado->defronte = novoNoFila;  
-                }	
-                //else //<<- novo item � o de menor prior rank de todos na fila, sendo a nova cauda
-                    //Essa � uma condicao ja tratada 
-                    //{
-                    //		novoNoFila->defronte = visitado;
-                    //		novoNoFila->atras = NULL;
-                    //		visitado->atras = novoNoFila;
-                    //		p->cauda = novoNoFila; 
-                    //}	
-            }   
-                
-        }//
-        p->refMov = novoNoFila;
-        return SUCESSO;
+            else if(novoNoFila->dados.rank > p->frente->dados.rank){
+                novoNoFila->defronte = NULL;
+                novoNoFila->atras = p->frente;
+                p->frente->defronte = novoNoFila;
+                p->frente = novoNoFila;
+                p->refMov = novoNoFila;
+            } else{
+                if(novoNoFila->dados.rank <= p->refMov->dados.rank)
+                    if(abs(novoNoFila->dados.rank - p->cauda->dados.rank) < (abs(novoNoFila->dados.rank - p->refMov->dados.rank)))
+                        p->refMov = buscaPelaEsquerda(p,novoNoFila,p->cauda, &mediaIt);
+                    else
+                        p->refMov = buscaPelaDireita(p,novoNoFila,p->refMov, &mediaIt);
+                else
+                    if(abs(novoNoFila->dados.rank - p->refMov->dados.rank) < abs(novoNoFila->dados.rank - p->frente->dados.rank))
+                        p->refMov = buscaPelaEsquerda(p,novoNoFila,p->refMov, &mediaIt);
+                    else
+                        p->refMov = buscaPelaDireita(p,novoNoFila,p->frente, &mediaIt);       
+            }
+        }
+        return mediaIt;
     }
     
 	return FRACASSO;
@@ -80,7 +66,7 @@ int insere(info *pInfo, struct descF *p)
 
 
 /*************** REMOVE DA FRENTE ***************/
-int remove_(info *reg, struct descF  *p)
+int remove_RM(info *reg, struct descFRM  *p)
 {
 	int ret = FRACASSO;
 	struct noFila *aux = p->cauda;
@@ -107,7 +93,7 @@ int remove_(info *reg, struct descF  *p)
 }
 
 /*************** BUSCA NA FRENTE ***************/
-int buscaNaFrente(info *reg, struct descF *p)
+int buscaNaFrenteRM(info *reg, struct descFRM *p)
 {  
     int ret = FRACASSO;
 
@@ -120,7 +106,7 @@ int buscaNaFrente(info *reg, struct descF *p)
 }
 
 /*************** BUSCA NA CAUDA ***************/
-int buscaNaCauda(info *reg, struct descF *p)
+int buscaNaCaudaRM(info *reg, struct descFRM *p)
 {
     int ret = FRACASSO;
 
@@ -133,7 +119,7 @@ int buscaNaCauda(info *reg, struct descF *p)
 }
 
 /*************** VAZIA? ***************/
-int testaVazia(struct descF *p)
+int testaVaziaRM(struct descFRM *p)
 {
     if(p->frente == NULL && p->cauda == NULL) {
         return SIM;
@@ -143,7 +129,7 @@ int testaVazia(struct descF *p)
 }
 
 /*************** TAMANHO ***************/
-int tamanhoDaFila(struct descF *p)
+int tamanhoDaFilaRM(struct descFRM *p)
 { 
     int tam = 0;
     struct noFila *aux = p->cauda;
@@ -158,7 +144,7 @@ int tamanhoDaFila(struct descF *p)
 }
 
 /*************** PURGA ***************/
-int reinicia(struct descF *p)
+int reiniciaRM(struct descFRM *p)
 {   
     int ret=FRACASSO;
     struct noFila *aux=NULL;
@@ -183,9 +169,39 @@ int reinicia(struct descF *p)
 }
 
 /*************** DESTROI ***************/
-struct descF * destroi(struct descF *p)
+struct descFRM * destroiRM(struct descFRM *p)
 {
-    reinicia(p);
+    reiniciaRM(p);
     free(p);
     return NULL; // aterra o ponteiro externo, declarado na aplica��o
+}
+
+struct noFila *buscaPelaDireita(struct descFRM *p,struct noFila *u, struct noFila *ref, int *mediaIt)
+{
+    struct noFila *aux = ref;
+    while(aux->dados.rank >= u->dados.rank) {
+        aux = aux->atras;
+        (*mediaIt)++;
+    }
+    
+    u->defronte = aux->defronte;
+    u->defronte->atras = u;
+    u->atras = aux;
+    aux->defronte = u;
+    return u;
+}
+
+struct noFila *buscaPelaEsquerda(struct descFRM *p,struct noFila *u, struct noFila *ref, int *mediaIt){
+    struct noFila *aux = ref;
+    while(aux->dados.rank < u->dados.rank) {
+        aux = aux->defronte;
+        (*mediaIt)++;
+    }
+    
+    u->defronte = aux;
+    u->atras = aux->atras;
+    u->atras->defronte = u;
+    aux->atras = u;
+
+    return u;
 }

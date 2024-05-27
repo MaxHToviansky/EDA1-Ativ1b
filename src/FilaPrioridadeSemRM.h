@@ -12,20 +12,10 @@
 #include "stdlib.h"
 #include "stdio.h"
 #include "string.h"
-
+#include "Nos.h"
 #define debugging  1
 
-typedef struct { 
-	int matricula, rank;
-	char nome[30], curso[30];
-}info;
 
-
-struct noFila { 
-	info dados;
-	struct noFila *atras;
-    struct noFila *defronte;
-};
 
 struct descF { 	
 	struct noFila *frente;

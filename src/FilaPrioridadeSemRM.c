@@ -17,7 +17,7 @@ struct descF * cria(int tamInfo)
 /*************** INSERE A PARTIR DA FRENTE ***************/
 int insere(info *pInfo, struct descF *p)
 { 
-	int result;
+	int result, mediaIt = 0;
   	struct noFila *novoNoFila=NULL, *visitado=NULL;
   	if ((novoNoFila = (struct noFila *) malloc(sizeof(struct noFila))) != NULL)
     { 
@@ -40,8 +40,10 @@ int insere(info *pInfo, struct descF *p)
             else
             {    	 
                 visitado = p->frente; /*maior prior rank na frente */
-                while(visitado->atras != NULL && (visitado->dados.rank >= novoNoFila->dados.rank)) 
+                while(visitado->atras != NULL && (visitado->dados.rank >= novoNoFila->dados.rank)) {
                     visitado= visitado->atras; /* A(rank) <= B(rank) */
+                    mediaIt++;
+                }
 
                 if(visitado->dados.rank < novoNoFila->dados.rank)   /* novo item fica a frente do visitado */
                 {   	
@@ -69,7 +71,7 @@ int insere(info *pInfo, struct descF *p)
             }   
                 
         }//
-        return SUCESSO;
+        return mediaIt;
     }
     
 	return FRACASSO;

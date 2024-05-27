@@ -15,19 +15,9 @@
 
 #define debugging  1
 
-typedef struct { 
-	int matricula, rank;
-	char nome[30], curso[30];
-}info;
+#include "Nos.h"
 
-
-struct noFila { 
-	info dados;
-	struct noFila *atras;
-    struct noFila *defronte;
-};
-
-struct descF { 	
+struct descFRM { 	
 	struct noFila *frente;
     struct noFila *refMov;
 	struct noFila *cauda;
@@ -39,14 +29,16 @@ struct descF {
 
 
 //======================FILA=====================
-struct descF * cria(int tamInfo);
-int insere(info *novo,struct descF *p);
-int tamanhoDaFila(struct descF *p);
-int reinicia(struct descF *p);
-struct descF * destroi(struct descF *p);
-int buscaNaCauda(info *reg, struct descF *p);
-int buscaNaFrente(info *reg, struct descF *p);
-int remove_(info *reg, struct descF *p);
-int testaVazia(struct descF *p);
-int inverte(struct descF *p);
+struct descFRM * criaRM(int tamInfo);
+int insereRM(info *novo,struct descFRM *p);
+int tamanhoDaFilaRM(struct descFRM *p);
+int reiniciaRM(struct descFRM *p);
+struct descFRM * destroiRM(struct descFRM *p);
+int buscaNaCaudaRM(info *reg, struct descFRM *p);
+int buscaNaFrenteRM(info *reg, struct descFRM *p);
+int remove_RM(info *reg, struct descFRM *p);
+int testaVaziaRM(struct descFRM *p);
+int inverteRM(struct descFRM *p);
+struct noFila *buscaPelaDireita(struct descFRM *p,struct noFila *u, struct noFila *ref, int *mediaIt);
+struct noFila *buscaPelaEsquerda(struct descFRM *p,struct noFila *u, struct noFila *ref, int *mediaIt);
 

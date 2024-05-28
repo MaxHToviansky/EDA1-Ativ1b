@@ -51,13 +51,14 @@ int main( int argc, char *argv[] ){
     struct descFRM *pqRM = criaRM(sizeof(info));
     
     int n = nLinhas[rand()%18], interpq=0, interpqRM = 0;
+    printf("Total de linhas lidas: %i\n", n);
     for(int i = 0; i < n; i++){
         interpq += insere(arr[i],pq);
         interpqRM += insereRM(arr[i],pqRM);
     }
 
-    printf("Total interacoes fila simples: %i Media: %f\n",interpq,interpq/n);
-    printf("Total interacoes fila simples: %i Media: %f\n",interpqRM,interpqRM/n);
+    printf("Total interacoes fila simples: %i Media: %.2f\n",interpq,(float)interpq/n);
+    printf("Total interacoes fila com Referencial Movel: %i Media: %.2f\n",interpqRM,(float)interpqRM/n);
 
     return 0;
 }

@@ -179,13 +179,14 @@ struct descFRM * destroiRM(struct descFRM *p)
 struct noFila *buscaPelaDireita(struct descFRM *p,struct noFila *u, struct noFila *ref, int *mediaIt)
 {
     struct noFila *aux = ref;
-    while(aux->dados.rank >= u->dados.rank) {
+    while( aux->dados.rank >= u->dados.rank && aux->atras != NULL ) {
         aux = aux->atras;
         (*mediaIt)++;
     }
     
     u->defronte = aux->defronte;
-    u->defronte->atras = u;
+    if( aux != p->frente )
+        u->defronte->atras = u;
     u->atras = aux;
     aux->defronte = u;
     return u;
@@ -193,14 +194,15 @@ struct noFila *buscaPelaDireita(struct descFRM *p,struct noFila *u, struct noFil
 
 struct noFila *buscaPelaEsquerda(struct descFRM *p,struct noFila *u, struct noFila *ref, int *mediaIt){
     struct noFila *aux = ref;
-    while(aux->dados.rank < u->dados.rank) {
+    while(aux->dados.rank < u->dados.rank && aux->defronte != NULL ) {
         aux = aux->defronte;
         (*mediaIt)++;
     }
     
     u->defronte = aux;
     u->atras = aux->atras;
-    u->atras->defronte = u;
+    if( aux != p->cauda )
+        u->atras->defronte = u;
     aux->atras = u;
 
     return u;

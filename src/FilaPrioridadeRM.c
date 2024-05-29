@@ -17,7 +17,7 @@ struct descFRM * criaRM(int tamInfo)
 /*************** INSERE A PARTIR DA FRENTE ***************/
 int insereRM(info *pInfo, struct descFRM *p)
 { 
-	int result, mediaIt = 0;
+	int result, mediaIt = 1;
   	struct noFila *novoNoFila=NULL, *visitado=NULL;
   	if ((novoNoFila = (struct noFila *) malloc(sizeof(struct noFila))) != NULL)
     { 

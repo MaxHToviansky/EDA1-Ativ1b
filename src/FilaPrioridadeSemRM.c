@@ -17,7 +17,7 @@ struct descF * cria(int tamInfo)
 /*************** INSERE A PARTIR DA FRENTE ***************/
 int insere(info *pInfo, struct descF *p)
 { 
-	int result, mediaIt = 0;
+	int result, mediaIt = 1;
   	struct noFila *novoNoFila=NULL, *visitado=NULL;
   	if ((novoNoFila = (struct noFila *) malloc(sizeof(struct noFila))) != NULL)
     { 
